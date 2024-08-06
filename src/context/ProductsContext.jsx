@@ -27,6 +27,6 @@ export const ProductsProvider = ({ children }) => {
 
 
   return (
-    <div>ProductsContext</div>
+    <div></div>
   )
 }
