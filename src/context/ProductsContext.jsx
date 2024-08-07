@@ -9,8 +9,10 @@ export const ProductsContext = createContext();
 
 export const ProductsProvider = ({ children }) => {
   const [productsArray, setProductsArray] = useState([]);
+  console.log('ProductsProvider rendering');
 
   useEffect(() => {
+    console.log("useeffect anda wuachin")
     const collectionRef = collection(db, "products");
     console.log("todo viene bien!!");
     onSnapshot(collectionRef, (data) => {
@@ -24,9 +26,9 @@ export const ProductsProvider = ({ children }) => {
 
   }, []);
 
+  console.log('ProductsProvider children:', children);
 
-
-  return (
-    <div></div>
-  )
+  <ProductsContext.Provider value={{ productsArray }}>
+    {children}
+  </ProductsContext.Provider>
 }
