@@ -1,4 +1,6 @@
 import React from 'react';
+import { Cover } from '../components/Cover';
+import { FiltersSelect } from '../components/FiltersSelect';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -24,29 +26,34 @@ export const GridCards = () => {
   ];
 
   return (
-    <Grid container spacing={5} justifyContent="center" sx={{ backgroundColor: "background.default", p: 6, m: 0 }} >
-      {cards.map((card, index) => (
-        <Grid item xs={12} sm={6} md={4} lg={3} key={index} >
-          <ButtonBase >
-            <Card sx={{ maxWidth: 345 }}>
-              <CardMedia
-                component="img"
-                height="240"
-                image={card.image}
-                alt={card.title}
-              />
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  {card.title}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {card.description}
-                </Typography>
-              </CardContent>
-            </Card>
-          </ButtonBase>
-        </Grid>
-      ))}
-    </Grid>
+    <>
+      <Cover />
+      <FiltersSelect />
+      <Grid container gap={5} justifyContent="center" sx={{ backgroundColor: "background.default", py: 4, m: 0 }} >
+        {cards.map((card, index) => (
+          <Grid item xs={12} sm={6} md={4} lg={3} key={index} display="flex"
+            justifyContent="center">
+            <ButtonBase >
+              <Card sx={{ maxWidth: 345 }}>
+                <CardMedia
+                  component="img"
+                  height="240"
+                  image={card.image}
+                  alt={card.title}
+                />
+                <CardContent>
+                  <Typography gutterBottom variant="h5" component="div">
+                    {card.title}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {card.description}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </ButtonBase>
+          </Grid>
+        ))}
+      </Grid>
+    </>
   )
 }
