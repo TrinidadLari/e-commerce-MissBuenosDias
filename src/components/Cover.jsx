@@ -43,7 +43,10 @@ export const Cover = () => {
         Miss Buen@s...
       </Typography>
       <Button variant="contained" sx={{
-        position: 'absolute', top: '80%', left: '8%', height: {
+        position: 'absolute', top: {
+          xs: '20%',
+          md: '80%',
+        }, left: '8%', height: {
           xs: 30,
           md: 50,
         }

@@ -1,5 +1,5 @@
 
-import { collection, onSnapshot } from 'firebase/firestore';
+import { collection, getDocs, onSnapshot } from 'firebase/firestore';
 import { useEffect } from 'react';
 import { createContext, useState } from 'react';
 
@@ -8,27 +8,33 @@ import { db } from '../../firebase';
 export const ProductsContext = createContext();
 
 export const ProductsProvider = ({ children }) => {
-  const [productsArray, setProductsArray] = useState([]);
+  const [products, setProducts] = useState([]);
   console.log('ProductsProvider rendering');
 
   useEffect(() => {
-    console.log("useeffect anda wuachin")
-    const collectionRef = collection(db, "products");
-    console.log("todo viene bien!!");
-    onSnapshot(collectionRef, (data) => {
-      const updateProductsArray = data?.docs?.map((product) => {
+    const getProducts = async () => {
+      const productsCollection = collection(db, "products");
+      console.log("todo viene bien!!");
+      const productsData = await getDocs(productsCollection);
+
+      const updateProducts = productsData.docs.map((product) => {
         return { ...product.data(), id: product.id };
       });
-      console.log(updateProductsArray);
 
-      setProductsArray(updateProductsArray);
-    });
 
+      console.log(updateProducts);
+
+      setProducts(updateProducts);
+    };
+    getProducts();
   }, []);
 
   console.log('ProductsProvider children:', children);
+  return (
+    <ProductsContext.Provider value={{ products }}>
+      {children}
+    </ProductsContext.Provider>
+  );
+};
 
-  <ProductsContext.Provider value={{ productsArray }}>
-    {children}
-  </ProductsContext.Provider>
-}
+

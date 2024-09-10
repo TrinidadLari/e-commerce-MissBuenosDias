@@ -6,14 +6,14 @@ import './index.css'
 
 
 
-// import { ProductsProvider } from './context/ProductsContext.jsx'
+import { ProductsProvider } from './context/ProductsContext.jsx'
 
 console.log('main.jsx is executing');
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    {/* <ProductsProvider> */}
-    <App />
-    {/* </ProductsProvider> */}
+    <ProductsProvider>
+      <App />
+    </ProductsProvider>
   </React.StrictMode>,
 )

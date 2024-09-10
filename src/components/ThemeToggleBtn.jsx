@@ -28,26 +28,3 @@ export const ThemeToggleBtn = ({ currentMode, setMode }) => {
 };
 
 
-// export const ThemeToggleBtn = () => {
-
-//   const [alignment, setAlignment] = React.useState('dark');
-
-//   const handleChange = (event, newAlignment) => {
-//     setAlignment(newAlignment);
-//   };
-
-
-//   return (
-//     <ToggleButtonGroup
-//       color="primary"
-//       value={alignment}
-//       exclusive
-//       onChange={handleChange}
-//       aria-label="Platform"
-//     >
-
-//       <ToggleButton value="light"><Brightness5Icon /></ToggleButton>
-//       <ToggleButton value="dark"><Brightness3Icon /></ToggleButton>
-//     </ToggleButtonGroup>
-//   )
-// }

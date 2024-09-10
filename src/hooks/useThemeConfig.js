@@ -7,13 +7,13 @@ const createThemeConfig = (mode) => ({
     ...(mode === 'light'
       ? {
         primary: {
-      main: '#F5DD61',
+      main: '#decfc5',
     },
     secondary: {
       main: '#FF7D29',
     },
     background: {
-      default: '#fbfdf7',
+      default: '#f2e4da',
       paper: '#f9f5e3',
     },
           text: {
