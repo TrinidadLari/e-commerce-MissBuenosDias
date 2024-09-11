@@ -33,8 +33,8 @@ const createThemeConfig = (mode) => ({
       paper: '#7770cb',
     },
           text: {
-            primary: '#fff',
-            secondary: grey[500],
+            primary: grey[300],
+            secondary: grey[200],
           },
         }),
   },

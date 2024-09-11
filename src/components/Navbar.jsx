@@ -1,6 +1,7 @@
 import * as React from 'react';
+import { useState } from 'react';
 
-import { AppBar, Box, Toolbar, IconButton, Badge, MenuItem, Menu, Button } from '@mui/material';
+import { AppBar, Box, Toolbar, IconButton, Badge, MenuItem, Menu, Typography } from '@mui/material';
 import { Menu as MenuIcon, Search as SearchIcon, AccountCircle, Mail as MailIcon, Notifications as NotificationsIcon, MoreVert as MoreIcon } from '@mui/icons-material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
@@ -10,8 +11,8 @@ import { ThemeToggleBtn } from './ThemeToggleBtn';
 
 
 export const Navbar = ({ mode, setMode }) => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -112,25 +113,7 @@ export const Navbar = ({ mode, setMode }) => {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <Button
-            size="small"
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            sx={{ mr: 2 }}
-          >Miss Buenos Días
-            {/* <MenuIcon /> */}
-          </Button>
-          <Button
-            size="small"
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            sx={{ mr: 2 }}
-          >
-            Miss Buenas Noches
-          </Button>
-          <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
+          <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'start' }}>
             <ThemeToggleBtn currentMode={mode} setMode={setMode} />
           </Box>
 

@@ -40,17 +40,15 @@ export const Cover = () => {
           xl: 'h3.fontSize',
         }
       }} >
-        Miss Buen@s...
+        Miss Buenos días
       </Typography>
-      <Button variant="contained" sx={{
-        position: 'absolute', top: {
-          xs: '20%',
-          md: '80%',
-        }, left: '8%', height: {
+      {/* <Button variant="contained" sx={{
+        position: 'absolute', top: '60%',
+        left: '8%', height: {
           xs: 30,
           md: 50,
         }
-      }} > Ir de Shopping</Button>
+      }} > Ir de Shopping</Button> */}
     </Box >
   );
 }

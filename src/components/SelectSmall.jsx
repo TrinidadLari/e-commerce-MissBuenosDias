@@ -1,35 +1,35 @@
-import * as React from 'react';
-import InputLabel from '@mui/material/InputLabel';
+import React from 'react';
+import { useTheme } from '@emotion/react';
 import MenuItem from '@mui/material/MenuItem';
-import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-
-export const SelectSmall = () => {
-  const [age, setAge] = React.useState('');
-
+export const SelectSmall = ({ value, onFilterChange }) => {
+  const theme = useTheme();
   const handleChange = (event) => {
-    setAge(event.target.value);
+    const newValue = event.target.value === "true" ? true : event.target.value === "false" ? false : "";
+    onFilterChange(newValue);
   };
 
   return (
-
     <FormControl sx={{ m: 1, minWidth: 120, maxHeight: 50 }}>
       <Select
-        value={age}
+        value={value === true ? "true" : value === false ? "false" : ""}
         onChange={handleChange}
         displayEmpty
         inputProps={{ 'aria-label': 'Without label' }}
+        sx={{
+          backgroundColor: theme.palette.primary.main,
+          color: theme.palette.text.primary,
+
+        }}
       >
         <MenuItem value="">
-          <em>Sin Filtro</em>
+          <em>Todos</em>
         </MenuItem>
-        <MenuItem value={10}>Cat Lovers</MenuItem>
-        <MenuItem value={20}>Not Cat</MenuItem>
-        <MenuItem value={30}>Favoritos</MenuItem>
+        <MenuItem value="true">Cat Lovers</MenuItem>
+        <MenuItem value="false">Not Cat</MenuItem>
       </Select>
     </FormControl>
-
-  )
-}
+  );
+};
