@@ -1,11 +1,13 @@
-
 import * as React from 'react';
+import { useState, useCallback } from 'react';
+import { Carousel } from './Carousel';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { styled, alpha } from '@mui/material/styles';
 import { InputBase } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import debounce from 'lodash/debounce'; // Asegúrate de tener lodash instalado
 
 const style = {
   position: 'absolute',
@@ -49,7 +51,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: 'inherit',
   '& .MuiInputBase-input': {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create('width'),
     width: '100%',
@@ -59,11 +60,22 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-
 export const SearchModal = () => {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [searchText, setSearchText] = useState('');
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  // Utilizar debounce para manejar el texto de búsqueda
+  const debouncedSetSearchText = useCallback(
+    debounce((value) => setSearchText(value), 2000), // 2 segundos de espera
+    []
+  );
+
+  const handleSearchChange = (event) => {
+    debouncedSetSearchText(event.target.value);
+  };
 
   return (
     <div>
@@ -71,7 +83,7 @@ export const SearchModal = () => {
       <Modal
         open={open}
         onClose={handleClose}
-        aria-labelledby="modal-modal-title"
+        aria-labelledby="modal-modal-name"
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
@@ -79,20 +91,37 @@ export const SearchModal = () => {
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
-            {/* <SearchModal /> */}
             <StyledInputBase
               placeholder="Search…"
               inputProps={{ 'aria-label': 'search' }}
+              onChange={handleSearchChange}
             />
           </Search>
-          {/* <Typography id="modal-modal-title" variant="h6" component="h2">
-            Text in a modal
-          </Typography> */}
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
             Productos sugeridos:
           </Typography>
+          <Carousel closeModal={handleClose} searchText={searchText} />
         </Box>
       </Modal>
     </div>
-  )
-}
+  );
+};
+
+
+// const filteredByName = products.filter(
+//   (product) =>
+//     nameFilter === "" ||
+//     product.name.toLowerCase().includes(nameFilter.toLowerCase())
+// );
+
+{/* <TextField
+  id="filled-basic"
+  label="Search"
+  variant="filled"
+  color="primary"
+  focused
+  onChange={handleNameChange}
+  sx={{
+    width: { xs: "100px", md: "200px" },
+  }}
+/> */}

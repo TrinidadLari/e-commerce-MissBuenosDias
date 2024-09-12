@@ -1,22 +1,38 @@
-import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
+import React, { useState } from 'react';
+import { AppBar, Box, Toolbar, Button } from '@mui/material';
 import { SelectSmall } from './SelectSmall';
-import { Button } from '@mui/material';
+import fondo1 from '../assets/images/fondos/fondo1.jpg';
+import fondo2 from '../assets/images/fondos/fondo2.jpg';
+import fondo3 from '../assets/images/fondos/fondo3.jpg';
+import fondo4 from '../assets/images/fondos/fondo4.jpg';
 
-export const FiltersSelect = () => {
+const backgrounds = [fondo1, fondo2, fondo3, fondo4];
+
+export const FiltersSelect = ({ value, onFilterChange }) => {
+  const [bgIndex, setBgIndex] = useState(0);
+
+  const changeBackground = () => {
+    setBgIndex((prevIndex) => (prevIndex + 1) % backgrounds.length);
+  };
+
   return (
-    <Box>
-      <AppBar position="static" sx={{ height: 100 }}>
-        <Toolbar variant="dense" sx={{ justifyContent: 'space-between' }}>
-          <SelectSmall />
-          <Button variant='contained' >Cambiar Fondo</Button>
+    <Box
+      sx={{
+        width: '100%',
+        height: 100,
+        backgroundImage: `url(${backgrounds[bgIndex]})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
+      <AppBar position="static" sx={{ height: '100%', background: 'transparent', boxShadow: 'none' }}>
+        <Toolbar variant="dense" sx={{ justifyContent: 'space-between', height: '100%' }}>
+          <SelectSmall value={value} onFilterChange={onFilterChange} />
+          <Button variant='contained' onClick={changeBackground}>
+            Cambiar Fondo
+          </Button>
         </Toolbar>
       </AppBar>
     </Box>
-  )
-}
+  );
+};
