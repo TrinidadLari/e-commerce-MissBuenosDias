@@ -9,7 +9,7 @@ export const Main = () => {
     <>
       <Routes>
         <Route path="/gridcards" element={<GridCards />} />
-        <Route path="/productdetails" element={<ProductDetails />} />
+        <Route path="/productdetails/:id" element={<ProductDetails />} />
       </Routes>
     </>
   )

@@ -1,14 +1,30 @@
-import * as React from 'react';
-import { Button, Card, CardContent, Chip, Typography, Box, Link } from '@mui/material';
-import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
+import React, { useContext } from 'react';
+import { useParams } from 'react-router-dom';
+
+import { ProductsContext } from '../context/ProductsContext';
+import { NotFound } from '../components/NotFound';
+
+import { Button, Card, CardContent, Typography, Box } from '@mui/material';
+import Checkbox from '@mui/material/Checkbox';
+import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
+import Favorite from '@mui/icons-material/Favorite';
+
+// const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
 export const ProductDetails = () => {
+  const { id } = useParams(); // Obtén el id del producto desde la URL
+  const { products } = useContext(ProductsContext);
+
+  const product = products.find((p) => p.id === id);
+  if (!product) {
+    return <NotFound />;
+  }
   return (
     <Box
       sx={{
         display: 'flex',
         justifyContent: 'center',
-        my: 50, // Margin vertical of 50px
+        my: 5,
       }}
     >
       <Card sx={{ width: 320, maxWidth: '100%', boxShadow: 'lg' }}>
@@ -16,19 +32,17 @@ export const ProductDetails = () => {
           <Box
             sx={{
               position: 'relative',
-              width: '100%', // Or specify a width if needed
+              width: '100%',
               minWidth: 200,
-              paddingTop: '56.25%', // 16:9 aspect ratio (height/width * 100)
+              paddingTop: '56.25%',
               overflow: 'hidden',
-              borderRadius: 1, // Optional: for rounded corners
-              boxShadow: 2, // Optional: for shadow
+              borderRadius: 1,
+              boxShadow: 2,
             }}
           >
             <img
-              src="https://images.unsplash.com/photo-1593121925328-369cc8459c08?auto=format&fit=crop&w=286"
-              srcSet="https://images.unsplash.com/photo-1593121925328-369cc8459c08?auto=format&fit=crop&w=286&dpr=2 2x"
-              loading="lazy"
-              alt=""
+              src={product.image}
+              alt={product.name}
               style={{
                 position: 'absolute',
                 top: 0,
@@ -39,38 +53,31 @@ export const ProductDetails = () => {
               }}
             />
           </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Checkbox
+              icon={<FavoriteBorder />}
+              checkedIcon={<Favorite />}
+            />
+          </Box>
         </CardContent>
         <CardContent>
-          <Typography level="body-xs">Bluetooth Headset</Typography>
-          <Link
-            href="#product-card"
-            color='#a0a0a0'
-            textColor='rgba(0, 0, 0, 0.87)'
-            overlay
-            endDecorator={<ArrowOutwardIcon />}
-            sx={{ fontWeight: 'md' }}
-          >
-            Super Rockez A400
-          </Link>
-
+          <Typography sx={{ fontSize: '20px' }}>{product.name}</Typography>
+          <Typography sx={{ fontSize: '12px' }}>{product.description}</Typography>
           <Typography
-            level="title-lg"
             sx={{ mt: 1, fontWeight: 'xl' }}
-            endDecorator={
-              <Chip component="span" size="sm" variant="soft" color="success">
-                Lowest price
-              </Chip>
-            }
           >
-            2,900 THB
+            ${product.price}
           </Typography>
-          <Typography level="body-sm">
-            (Only <b>7</b> left in stock!)
+          <Typography sx={{ fontSize: '12px' }}>
+            (Quedan solo <b>{product.stock}</b> en stock!)
           </Typography>
         </CardContent>
-        <CardContent>
-          <Button variant="solid" color="danger" size="lg">
-            Add to cart
+        <CardContent sx={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Button variant="contained" sx={{ fontSize: '12px' }}>
+            Volver
+          </Button>
+          <Button variant="contained" sx={{ fontSize: '12px' }}>
+            Agregar al carrito
           </Button>
         </CardContent>
       </Card>

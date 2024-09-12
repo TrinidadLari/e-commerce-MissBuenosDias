@@ -3,12 +3,13 @@ import { ProductsContext } from '../context/ProductsContext';
 import { Cover } from '../components/Cover';
 import { NotFound } from '../components/NotFound';
 import { FiltersSelect } from '../components/FiltersSelect';
+import { Link } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { ButtonBase, Box, Link } from '@mui/material';
+import { ButtonBase, Box } from '@mui/material';
 
 export const GridCards = () => {
   const { products, error } = useContext(ProductsContext);
