@@ -4,6 +4,7 @@ import { SearchModal } from './SearchModal';
 import { ThemeToggleBtn } from './ThemeToggleBtn';
 import { CartDrawer } from './CartDrawer';
 import { UserDrawer } from './UserDrawer';
+import { Fav } from './Fav';
 import Box from '@mui/material/Box';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -24,6 +25,12 @@ export const Navbar = ({ mode, setMode }) => {
   const handleUserDrawerToggle = () => {
     setUserDrawerOpen(!userDrawerOpen);
   };
+
+  const handleCartOpen = () => {
+    setUserDrawerOpen(false);
+    setCartDrawerOpen(true);
+  };
+
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -60,7 +67,8 @@ export const Navbar = ({ mode, setMode }) => {
         </Toolbar>
       </AppBar>
       <CartDrawer open={cartDrawerOpen} onClose={handleCartDrawerToggle} />
-      <UserDrawer open={userDrawerOpen} onClose={handleUserDrawerToggle} />
+      <UserDrawer open={userDrawerOpen} onClose={handleUserDrawerToggle} onCartOpen={handleCartOpen} />
+
     </Box>
   );
 }

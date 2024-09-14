@@ -11,11 +11,20 @@ export const Register = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [nickname, setNickname] = useState('');
-  const { register, error } = useContext(AuthContext);
+  const { register, signIn, error } = useContext(AuthContext);
   const theme = useTheme();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
+  };
+
+  const handleSignIn = async (e) => {
+    e.preventDefault();
+    try {
+      await signIn(email, password); // Llama a la función signIn del contexto
+    } catch (err) {
+      console.error('Error al iniciar sesión:', err);
+    }
   };
 
   const handleRegister = async (e) => {
@@ -25,7 +34,7 @@ export const Register = () => {
       return;
     }
     try {
-      await register(email, password);
+      await register(email, password, nickname);
     } catch (err) {
       console.error('Error durante el registro:', err);
     }
@@ -44,14 +53,18 @@ export const Register = () => {
           label="E-mail*"
           type="email"
           variant="outlined"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           InputLabelProps={{ shrink: true }}
           fullWidth
-          sx={{ marginBottom: 2 }} // Adjust spacing if needed
+          sx={{ marginBottom: 2 }}
         />
         <TextField
           label="Contraseña"
           type={showPassword ? "text" : "password"}
           variant="outlined"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           InputLabelProps={{ shrink: true }}
           fullWidth
           InputProps={{
@@ -63,9 +76,9 @@ export const Register = () => {
               </InputAdornment>
             ),
           }}
-          sx={{ marginBottom: 2 }} // Adjust spacing if needed
+          sx={{ marginBottom: 2 }}
         />
-        <Button variant="contained" sx={{ backgroundColor: theme.palette.primary.main, color: theme.palette.text.primary, my: 3 }}>
+        <Button variant="contained" type="submit" sx={{ backgroundColor: theme.palette.primary.main, color: theme.palette.text.primary, my: 3 }}>
           Iniciar sesión
         </Button>
       </Box>

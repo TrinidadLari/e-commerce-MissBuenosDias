@@ -1,28 +1,52 @@
 import { createContext, useState, useEffect } from 'react';
-import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../firebase';
+import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut as firebaseSignOut } from 'firebase/auth';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { auth, db } from '../../firebase';
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [nickname, setNickname] = useState('');
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      setLoading(true);
+      if (currentUser) {
+        // Si hay un usuario autenticado, consulta Firestore para obtener el apodo
+        const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+        if (userDoc.exists()) {
+          setNickname(userDoc.data().nickname); // Establece el apodo en el estado
+        }
+        setUser(currentUser);
+      } else {
+        setUser(null);
+        setNickname(''); // Limpia el apodo si no hay usuario autenticado
+      }
       setLoading(false);
-      console.log("Usuario autenticado:", currentUser);
     });
     return () => unsubscribe();
   }, []);
 
-  const register = async (email, password) => {
+  const register = async (email, password, nickname) => {
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+
+      await setDoc(doc(db, 'users', user.uid), {
+        email: user.email,
+        nickname: nickname,
+        createdAt: new Date()
+      });
+
       setError(null);
-      console.log('Registro exitoso');
+      console.log('Registro y almacenamiento en Firestore exitoso');
+
+
+
     } catch (err) {
       if (err.code === 'auth/email-already-in-use') {
         console.error('Error: El correo electrónico ya está en uso.');
@@ -44,8 +68,20 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const signOut = async () => {
+    try {
+      await firebaseSignOut(auth);
+      setUser(null);
+      setNickname('');
+      console.log('Cierre de sesión exitoso');
+    } catch (err) {
+      console.error('Error al cerrar sesión:', err);
+      setError('Error al cerrar sesión. Por favor, intenta nuevamente.');
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, signIn, register, loading, error }}>
+    <AuthContext.Provider value={{ user, signIn, register, loading, error, nickname, signOut }}>
       {children}
     </AuthContext.Provider>
   );
