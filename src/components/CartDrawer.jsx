@@ -1,13 +1,22 @@
 import React, { useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
+import { GoToLogin } from './GoToLogin';
+import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Typography from '@mui/material/Typography';
-import { GoToLogin } from './GoToLogin';
 import { Button } from '@mui/material';
 
 export const CartDrawer = ({ open, onClose }) => {
+  const { user, nickname } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleConfirmBuy = () => {
+    onClose();
+    navigate('/confirmBuy');
+  };
 
 
   const list = () => (
@@ -45,13 +54,17 @@ export const CartDrawer = ({ open, onClose }) => {
         onClose={onClose}
         onOpen={() => { }}
       >
-        <GoToLogin />
-        <Typography textAlign="center"
-          my="12px"> Hola, user! </Typography>
-
-        {list()}
-
-        <Button variant='contained' sx={{ width: "80%", m: "auto" }}>Confirmar compra</Button>
+        {!user ? (
+          <GoToLogin />
+        ) : (
+          <>
+            <Typography textAlign="center" my="12px">
+              Hola {nickname}!
+            </Typography>
+            {list()}
+            <Button variant='contained' onClick={handleConfirmBuy} sx={{ width: "80%", m: "auto" }}>Confirmar compra</Button>
+          </>
+        )}
       </SwipeableDrawer>
     </>
   );

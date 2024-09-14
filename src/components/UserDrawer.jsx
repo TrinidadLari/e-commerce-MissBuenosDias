@@ -1,4 +1,8 @@
-import * as React from 'react';
+import React, { useContext, useState } from 'react';
+import { AuthContext } from '../context/AuthContext';
+import { GoToLogin } from './GoToLogin';
+import { Link } from 'react-router-dom';
+import { Fav } from './Fav';
 import Box from '@mui/material/Box';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import List from '@mui/material/List';
@@ -8,7 +12,29 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import { Typography } from '@mui/material';
 
-export const UserDrawer = ({ open, onClose }) => {
+export const UserDrawer = ({ open, onClose, onCartOpen }) => {
+  const { user, nickname, signOut } = useContext(AuthContext);
+  const [favOpen, setFavOpen] = useState(false);
+
+  const handleSignOutClick = async () => {
+    await signOut();
+    onClose();
+  };
+
+  const handleCartClick = () => {
+    onClose();
+    onCartOpen();
+  };
+
+  const handleFavClick = () => {
+    onClose();
+    setFavOpen(true);
+  };
+
+  const handleFavClose = () => {
+    setFavOpen(false);
+  };
+
   const list = () => (
     <Box
       sx={{ width: 250 }}
@@ -17,36 +43,59 @@ export const UserDrawer = ({ open, onClose }) => {
       onKeyDown={onClose}
     >
       <List>
-        {['Compras Pendientes', 'Favoritos', 'Historial'].map((text) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
+        <ListItem disablePadding>
+          <ListItemButton onClick={handleCartClick}>
+            <ListItemText primary="Compras Pendientes" />
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton onClick={handleFavClick}>
+            <ListItemText primary="Favoritos" />
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton>
+            <ListItemText primary="Historial" />
+          </ListItemButton>
+        </ListItem>
       </List>
       <Divider />
       <List>
-        {['Mi perfil', 'Cerrar sesión'].map((text) => (
-          <ListItem key={text} disablePadding>
+        <ListItem disablePadding>
+          <Link to="/profile" style={{ textDecoration: 'none', color: 'inherit' }}>
             <ListItemButton>
-              <ListItemText primary={text} />
+              <ListItemText primary={`Perfil de ${nickname}`} />
             </ListItemButton>
-          </ListItem>
-        ))}
+          </Link>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton onClick={handleSignOutClick}>
+            <ListItemText primary="Cerrar sesión" />
+          </ListItemButton>
+        </ListItem>
       </List>
     </Box>
   );
 
   return (
-    <SwipeableDrawer
-      anchor="right"
-      open={open}
-      onClose={onClose}
-      onOpen={() => { }}
-    >
-      <Typography sx={{ textAlign: 'center', mt: '10px' }}>Hola!</Typography>
-      {list()}
-    </SwipeableDrawer>
+    <>
+      <SwipeableDrawer
+        anchor="right"
+        open={open}
+        onClose={onClose}
+        onOpen={() => { }}
+      >
+        <Box p={2}>
+          {user ? (
+            <>
+              {list()}
+            </>
+          ) : (
+            <GoToLogin />
+          )}
+        </Box>
+      </SwipeableDrawer>
+      <Fav open={favOpen} onClose={handleFavClose} />
+    </>
   );
 }
