@@ -1,113 +1,29 @@
 import * as React from 'react';
 import { useState } from 'react';
-
-import { AppBar, Box, Toolbar, IconButton, Badge, MenuItem, Menu, Typography } from '@mui/material';
-import { Menu as MenuIcon, Search as SearchIcon, AccountCircle, Mail as MailIcon, Notifications as NotificationsIcon, MoreVert as MoreIcon } from '@mui/icons-material';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-
 import { SearchModal } from './SearchModal';
 import { ThemeToggleBtn } from './ThemeToggleBtn';
+import { CartDrawer } from './CartDrawer';
+import { UserDrawer } from './UserDrawer';
+import Box from '@mui/material/Box';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Badge from '@mui/material/Badge';
+import { Search as SearchIcon, AccountCircle, ShoppingCart as ShoppingCartIcon } from '@mui/icons-material';
 
 
 
 export const Navbar = ({ mode, setMode }) => {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
+  const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
+  const [userDrawerOpen, setUserDrawerOpen] = useState(false);
 
-  const isMenuOpen = Boolean(anchorEl);
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+  const handleCartDrawerToggle = () => {
+    setCartDrawerOpen(!cartDrawerOpen);
   };
 
-  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
+  const handleUserDrawerToggle = () => {
+    setUserDrawerOpen(!userDrawerOpen);
   };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    handleMobileMenuClose();
-  };
-
-  const handleMobileMenuOpen = (event) => {
-    setMobileMoreAnchorEl(event.currentTarget);
-  };
-
-  const menuId = 'primary-search-account-menu';
-  const renderMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <MenuItem onClick={handleMenuClose}>Perfil</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Mi cuenta</MenuItem>
-    </Menu>
-  );
-
-  const mobileMenuId = 'primary-search-account-menu-mobile';
-  const renderMobileMenu = (
-    <Menu
-      anchorEl={mobileMoreAnchorEl}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      id={mobileMenuId}
-      keepMounted
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
-      }}
-      open={isMobileMenuOpen}
-      onClose={handleMobileMenuClose}
-    >
-      <MenuItem>
-        <IconButton >
-          {/* size="large" aria-label="show 4 new mails" color="inherit" */}
-          {/* <Badge badgeContent={4} color="error"> */}
-          <SearchModal />
-          {/* </Badge> */}
-        </IconButton>
-        <p>Buscar</p>
-      </MenuItem>
-      <MenuItem>
-        <IconButton
-          size="large"
-          aria-label="show 17 new notifications"
-          color="inherit"
-        >
-          <Badge badgeContent={17} color="error">
-            <ShoppingCartIcon />
-          </Badge>
-        </IconButton>
-        <p>Carrito</p>
-      </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          size="large"
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
-          <AccountCircle />
-        </IconButton>
-        <p>Perfil</p>
-      </MenuItem>
-    </Menu>
-  );
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -117,19 +33,15 @@ export const Navbar = ({ mode, setMode }) => {
             <ThemeToggleBtn currentMode={mode} setMode={setMode} />
           </Box>
 
-          <Box sx={{ flexGrow: 1 }} />
-
-          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-
-            <IconButton >
-              {/* <Badge badgeContent={4} color="error"> */}
+          <Box sx={{ display: 'flex', flexGrow: 1, justifyContent: 'flex-end', alignItems: 'center' }}>
+            <IconButton>
               <SearchModal />
-              {/* </Badge> */}
             </IconButton>
             <IconButton
               size="large"
               aria-label="show 17 new notifications"
               color="inherit"
+              onClick={handleCartDrawerToggle}
             >
               <Badge badgeContent={17} color="error">
                 <ShoppingCartIcon />
@@ -139,30 +51,16 @@ export const Navbar = ({ mode, setMode }) => {
               size="large"
               edge="end"
               aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
               color="inherit"
+              onClick={handleUserDrawerToggle}
             >
               <AccountCircle />
             </IconButton>
           </Box>
-          <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-            <IconButton
-              size="large"
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
-          </Box>
         </Toolbar>
       </AppBar>
-      {renderMobileMenu}
-      {renderMenu}
+      <CartDrawer open={cartDrawerOpen} onClose={handleCartDrawerToggle} />
+      <UserDrawer open={userDrawerOpen} onClose={handleUserDrawerToggle} />
     </Box>
   );
 }

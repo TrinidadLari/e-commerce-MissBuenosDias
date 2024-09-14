@@ -1,5 +1,4 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
 import { Main } from './Main.jsx';
 import { Header } from './Header.jsx';
 import { Footer } from './Footer.jsx';

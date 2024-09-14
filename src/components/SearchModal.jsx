@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { useState, useCallback } from 'react';
-import { Carousel } from './Carousel';
+import { Carousel } from './carousel/Carousel';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { styled, alpha } from '@mui/material/styles';
 import { InputBase } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import debounce from 'lodash/debounce'; // Asegúrate de tener lodash instalado
+import debounce from 'lodash/debounce';
 
 const style = {
   position: 'absolute',
@@ -67,9 +67,9 @@ export const SearchModal = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  // Utilizar debounce para manejar el texto de búsqueda
+
   const debouncedSetSearchText = useCallback(
-    debounce((value) => setSearchText(value), 2000), // 2 segundos de espera
+    debounce((value) => setSearchText(value), 2000),
     []
   );
 
@@ -106,22 +106,3 @@ export const SearchModal = () => {
     </div>
   );
 };
-
-
-// const filteredByName = products.filter(
-//   (product) =>
-//     nameFilter === "" ||
-//     product.name.toLowerCase().includes(nameFilter.toLowerCase())
-// );
-
-{/* <TextField
-  id="filled-basic"
-  label="Search"
-  variant="filled"
-  color="primary"
-  focused
-  onChange={handleNameChange}
-  sx={{
-    width: { xs: "100px", md: "200px" },
-  }}
-/> */}
