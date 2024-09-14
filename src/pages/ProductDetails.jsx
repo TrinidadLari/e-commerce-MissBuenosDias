@@ -1,43 +1,33 @@
 import React, { useContext } from 'react';
 import { useParams } from 'react-router-dom';
-
 import { ProductsContext } from '../context/ProductsContext';
-import { NotFound } from '../components/NotFound';
-
+import { CartContext } from '../context/CartContext';
+import { Link } from 'react-router-dom';
 import { Button, Card, CardContent, Typography, Box } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
 import Favorite from '@mui/icons-material/Favorite';
 
-// const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
-
 export const ProductDetails = () => {
-  const { id } = useParams(); // Obtén el id del producto desde la URL
+  const { id } = useParams();
   const { products } = useContext(ProductsContext);
+  const { addProduct } = useContext(CartContext); // Accedes al método para agregar productos
 
   const product = products.find((p) => p.id === id);
   if (!product) {
-    return <NotFound />;
+    return <div>Producto no encontrado</div>;
   }
+
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        my: 5,
-      }}
-    >
-      <Card sx={{ width: 320, maxWidth: '100%', boxShadow: 'lg' }}>
-        <CardContent>
+    <Box display="flex" justifyContent="center" py={5} sx={{ backgroundColor: "background.default" }}>
+      <Card sx={{ width: 320 }}>
+        <CardContent >
           <Box
             sx={{
               position: 'relative',
               width: '100%',
-              minWidth: 200,
               paddingTop: '56.25%',
               overflow: 'hidden',
-              borderRadius: 1,
-              boxShadow: 2,
             }}
           >
             <img
@@ -53,34 +43,20 @@ export const ProductDetails = () => {
               }}
             />
           </Box>
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Checkbox
-              icon={<FavoriteBorder />}
-              checkedIcon={<Favorite />}
-            />
+          <Checkbox icon={<FavoriteBorder />} checkedIcon={<Favorite />} />
+          <Typography variant="h5">{product.name}</Typography>
+          <Typography variant="body2">{product.description}</Typography>
+          <Typography variant="h6">${product.price}</Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Button variant="contained" sx={{ fontSize: '12px' }} component={Link} to={`/gridcards`} >
+              Volver
+            </Button>
+            <Button variant="contained" sx={{ fontSize: '12px' }} onClick={() => addProduct(product)}>
+              Agregar al carrito
+            </Button>
           </Box>
-        </CardContent>
-        <CardContent>
-          <Typography sx={{ fontSize: '20px' }}>{product.name}</Typography>
-          <Typography sx={{ fontSize: '12px' }}>{product.description}</Typography>
-          <Typography
-            sx={{ mt: 1, fontWeight: 'xl' }}
-          >
-            ${product.price}
-          </Typography>
-          <Typography sx={{ fontSize: '12px' }}>
-            (Quedan solo <b>{product.stock}</b> en stock!)
-          </Typography>
-        </CardContent>
-        <CardContent sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Button variant="contained" sx={{ fontSize: '12px' }}>
-            Volver
-          </Button>
-          <Button variant="contained" sx={{ fontSize: '12px' }}>
-            Agregar al carrito
-          </Button>
         </CardContent>
       </Card>
     </Box>
-  )
-}
+  );
+};

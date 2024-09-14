@@ -1,12 +1,13 @@
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ProductsContext } from '../context/ProductsContext';
+import { ProductsContext } from '../../context/ProductsContext';
+import { NotFound } from '../NotFound';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
 import 'swiper/css/pagination';
 import { EffectCoverflow, Pagination } from 'swiper/modules';
-import { NotFound } from './NotFound';
+import './style.css'
 
 export const Carousel = ({ closeModal, searchText }) => {
   const { products, error } = useContext(ProductsContext);
@@ -16,17 +17,16 @@ export const Carousel = ({ closeModal, searchText }) => {
     return <div>{error}</div>;
   }
 
-  // Validar que products es un array
   if (!Array.isArray(products)) {
-    return <div>Invalid products data</div>;
+    return <div>No se encuentran productos</div>;
   }
 
   const handleCardClick = (productId) => {
-    closeModal(); // Cierra la modal
+    closeModal();
     navigate(`/productdetails/${productId}`);
   };
 
-  // Filtrar productos según el texto de búsqueda
+
   const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchText.toLowerCase())
   );
@@ -52,10 +52,9 @@ export const Carousel = ({ closeModal, searchText }) => {
         {filteredProducts.length > 0 ? (
           filteredProducts.map(product => (
             <SwiperSlide key={product.id} onClick={() => handleCardClick(product.id)} style={{ cursor: 'pointer' }}>
-              <img src={product.imageUrl} alt={product.name} />
+              <img src={product.image} alt={product.name} style={{ marginBottom: '10px' }} />
               <div>
                 <h3>{product.name}</h3>
-                <p>{product.description}</p>
                 <p>{`$${product.price}`}</p>
               </div>
             </SwiperSlide>
