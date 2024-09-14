@@ -3,24 +3,43 @@ import { useTheme } from '@mui/material';
 import { Container, TextField, InputAdornment, IconButton, Button, Box, Typography, Grid } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { AuthContext } from '../context/AuthContext';
 
 export const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [nickname, setNickname] = useState('');
+  const { register, error } = useContext(AuthContext);
   const theme = useTheme();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-  return (
-    <Container maxWidth="sm">
 
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    if (password !== confirmPassword) {
+      alert('Las contraseñas no coinciden');
+      return;
+    }
+    try {
+      await register(email, password);
+    } catch (err) {
+      console.error('Error durante el registro:', err);
+    }
+  };
+
+  return (
+    <Container maxWidth="100vw" sx={{ backgroundColor: "background.paper" }}>
       <Typography variant="h5" align="center" >
         Iniciar sesión
       </Typography>
       <Typography sx={{ fontSize: '12px' }} align="center" gutterBottom>
         (para poder concretar tu compra)
       </Typography>
-      <Box component="form" sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <Box component="form" maxWidth="80vw" m="auto" sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         <TextField
           label="E-mail*"
           type="email"
@@ -54,22 +73,26 @@ export const Register = () => {
       <Typography sx={{ fontSize: '12px' }} align="center">
         ¿No tienes cuenta?
       </Typography>
-      <Typography variant="h5" align="center" gutterBottom>
+      <Typography variant="h5" align="center">
         Registrarse
       </Typography>
-      <Box component="form" sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <Box component="form" maxWidth="80vw" m="auto" sx={{ display: 'flex', flexDirection: 'column', gap: 2 }} onSubmit={handleRegister}>
         <TextField
           label="E-mail*"
           type="email"
           variant="outlined"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           InputLabelProps={{ shrink: true }}
           fullWidth
-          sx={{ marginBottom: 2 }} // Adjust spacing if needed
+          sx={{ marginBottom: 2 }}
         />
         <TextField
           label="Apodo*"
           type="text"
           variant="outlined"
+          value={nickname}
+          onChange={(e) => setNickname(e.target.value)}
           InputLabelProps={{ shrink: true }}
           fullWidth
           sx={{ marginBottom: 2 }}
@@ -78,6 +101,8 @@ export const Register = () => {
           label="Contraseña"
           type={showPassword ? "text" : "password"}
           variant="outlined"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           InputLabelProps={{ shrink: true }}
           fullWidth
           InputProps={{
@@ -89,12 +114,14 @@ export const Register = () => {
               </InputAdornment>
             ),
           }}
-          sx={{ marginBottom: 2 }} // Adjust spacing if needed
+          sx={{ marginBottom: 2 }}
         />
         <TextField
           label="Repetir contraseña"
           type={showPassword ? "text" : "password"}
           variant="outlined"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
           InputLabelProps={{ shrink: true }}
           fullWidth
           InputProps={{
@@ -106,32 +133,21 @@ export const Register = () => {
               </InputAdornment>
             ),
           }}
-          sx={{ marginBottom: 2 }} // Adjust spacing if needed
+          sx={{ marginBottom: 2 }}
         />
+        {error && <Typography color="error">{error}</Typography>}
         <Button
           variant="contained"
+          type="submit"
           sx={{
-            backgroundColor: theme.palette.primary.main, // Use primary color for button
-            color: theme.palette.text.primary, // Use text color for button text
-            my: 3
+            backgroundColor: theme.palette.primary.main,
+            color: theme.palette.text.primary,
+            my: 3,
           }}
         >
           Registrarse
         </Button>
-
-        <Grid container spacing={2} justifyContent="center">
-          <Grid item>
-            <Button variant="outlined" sx={{ width: '263px', height: '48px', borderRadius: '100px', borderColor: theme.palette.secondary.main, color: theme.palette.text.secondary, '&:hover': { backgroundColor: theme.palette.background.paper }, boxShadow: '0px 1px 2px 0px rgba(0, 0, 0, 0.30), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)' }}>
-              Ingresar con Google
-            </Button>
-          </Grid>
-          <Grid item>
-            <Button variant="outlined" sx={{ width: '263px', height: '48px', borderRadius: '100px', borderColor: theme.palette.secondary.main, color: theme.palette.text.secondary, '&:hover': { backgroundColor: theme.palette.background.paper }, boxShadow: '0px 1px 2px 0px rgba(0, 0, 0, 0.30), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)', mb: 8 }}>
-              Ingresar con Facebook
-            </Button>
-          </Grid>
-        </Grid>
       </Box>
-    </ Container>
-  )
-}
+    </Container>
+  );
+};
