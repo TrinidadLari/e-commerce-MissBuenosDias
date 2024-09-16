@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { ProductsContext } from '../context/ProductsContext';
+import { AuthContext } from '../context/AuthContext';
 import { useTheme } from '@mui/material';
 import { Button, Box, Typography } from '@mui/material';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -16,6 +17,7 @@ import '../components/carousel/style.css'
 export const Welcome = () => {
   const theme = useTheme();
   const { products, error } = useContext(ProductsContext);
+  const { user } = useContext(AuthContext);
 
   if (error) {
     return <NotFound />;
@@ -80,7 +82,7 @@ export const Welcome = () => {
           </Button>
         </Link>
 
-        <Register />
+        {!user && <Register />}
       </Box>
     </>
   )
