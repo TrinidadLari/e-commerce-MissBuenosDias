@@ -26,9 +26,6 @@ export const Footer = () => {
           <Button variant="contained" sx={{ fontSize: '12px' }} component={Link} to={`/`}>
             Inicio
           </Button>
-          <Button variant="contained" sx={{ fontSize: '12px' }} component={Link} to={`/register`} >
-            Registrarse
-          </Button>
           <Button variant="contained" sx={{ fontSize: '12px' }} component={Link} to={`/gridcards`}>
             Galería
           </Button>

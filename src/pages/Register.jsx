@@ -1,77 +1,91 @@
 import React, { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 import { useTheme } from '@mui/material';
 import { Container, TextField, InputAdornment, IconButton, Button, Box, Typography, Grid } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { AuthContext } from '../context/AuthContext';
+
 
 export const Register = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [nickname, setNickname] = useState('');
+  const [signInEmail, setSignInEmail] = useState('');
+  const [signInPassword, setSignInPassword] = useState('');
+  const [showSignInPassword, setShowSignInPassword] = useState(false);
+
+  const [registerEmail, setRegisterEmail] = useState('');
+  const [registerPassword, setRegisterPassword] = useState('');
+  const [registerConfirmPassword, setRegisterConfirmPassword] = useState('');
+  const [registerNickname, setRegisterNickname] = useState('');
+  const [showRegisterPassword, setShowRegisterPassword] = useState(false);
+
   const { register, signIn, error } = useContext(AuthContext);
   const theme = useTheme();
+  const navigate = useNavigate();
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
+
+  const togglePasswordVisibility = (setter) => {
+    setter(prev => !prev);
   };
+
 
   const handleSignIn = async (e) => {
     e.preventDefault();
     try {
-      await signIn(email, password); // Llama a la función signIn del contexto
+      await signIn(signInEmail, signInPassword);
+      navigate('/gridcards');
     } catch (err) {
       console.error('Error al iniciar sesión:', err);
+      alert('Error al iniciar sesión. Por favor, verifica tus credenciales.');
     }
   };
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
+    if (registerPassword !== registerConfirmPassword) {
       alert('Las contraseñas no coinciden');
       return;
     }
     try {
-      await register(email, password, nickname);
+      await register(registerEmail, registerPassword, registerNickname);
+      navigate('/gridcards');
     } catch (err) {
       console.error('Error durante el registro:', err);
+      alert('Error durante el registro. Por favor, intenta nuevamente.');
     }
   };
 
   return (
     <Container maxWidth="100vw" sx={{ backgroundColor: "background.paper" }}>
-      <Typography variant="h5" align="center" >
+      <Typography variant="h5" align="center">
         Iniciar sesión
       </Typography>
       <Typography sx={{ fontSize: '12px' }} align="center" gutterBottom>
         (para poder concretar tu compra)
       </Typography>
-      <Box component="form" maxWidth="80vw" m="auto" sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <Box component="form" maxWidth="80vw" m="auto" sx={{ display: 'flex', flexDirection: 'column', gap: 2 }} onSubmit={handleSignIn}>
         <TextField
           label="E-mail*"
           type="email"
           variant="outlined"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={signInEmail}
+          onChange={(e) => setSignInEmail(e.target.value)}
           InputLabelProps={{ shrink: true }}
           fullWidth
           sx={{ marginBottom: 2 }}
         />
         <TextField
           label="Contraseña"
-          type={showPassword ? "text" : "password"}
+          type={showSignInPassword ? "text" : "password"}
           variant="outlined"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={signInPassword}
+          onChange={(e) => setSignInPassword(e.target.value)}
           InputLabelProps={{ shrink: true }}
           fullWidth
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton onClick={togglePasswordVisibility}>
-                  {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                <IconButton onClick={() => togglePasswordVisibility(setShowSignInPassword)}>
+                  {showSignInPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                 </IconButton>
               </InputAdornment>
             ),
@@ -94,8 +108,8 @@ export const Register = () => {
           label="E-mail*"
           type="email"
           variant="outlined"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={registerEmail}
+          onChange={(e) => setRegisterEmail(e.target.value)}
           InputLabelProps={{ shrink: true }}
           fullWidth
           sx={{ marginBottom: 2 }}
@@ -104,25 +118,25 @@ export const Register = () => {
           label="Apodo*"
           type="text"
           variant="outlined"
-          value={nickname}
-          onChange={(e) => setNickname(e.target.value)}
+          value={registerNickname}
+          onChange={(e) => setRegisterNickname(e.target.value)}
           InputLabelProps={{ shrink: true }}
           fullWidth
           sx={{ marginBottom: 2 }}
         />
         <TextField
           label="Contraseña"
-          type={showPassword ? "text" : "password"}
+          type={showRegisterPassword ? "text" : "password"}
           variant="outlined"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={registerPassword}
+          onChange={(e) => setRegisterPassword(e.target.value)}
           InputLabelProps={{ shrink: true }}
           fullWidth
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton onClick={togglePasswordVisibility}>
-                  {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                <IconButton onClick={() => togglePasswordVisibility(setShowRegisterPassword)}>
+                  {showRegisterPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                 </IconButton>
               </InputAdornment>
             ),
@@ -131,17 +145,17 @@ export const Register = () => {
         />
         <TextField
           label="Repetir contraseña"
-          type={showPassword ? "text" : "password"}
+          type={showRegisterPassword ? "text" : "password"}
           variant="outlined"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
+          value={registerConfirmPassword}
+          onChange={(e) => setRegisterConfirmPassword(e.target.value)}
           InputLabelProps={{ shrink: true }}
           fullWidth
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton onClick={togglePasswordVisibility}>
-                  {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                <IconButton onClick={() => togglePasswordVisibility(setShowRegisterPassword)}>
+                  {showRegisterPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                 </IconButton>
               </InputAdornment>
             ),
@@ -162,5 +176,6 @@ export const Register = () => {
         </Button>
       </Box>
     </Container>
+
   );
 };

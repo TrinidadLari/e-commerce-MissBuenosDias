@@ -15,15 +15,14 @@ export const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setLoading(true);
       if (currentUser) {
-        // Si hay un usuario autenticado, consulta Firestore para obtener el apodo
         const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
         if (userDoc.exists()) {
-          setNickname(userDoc.data().nickname); // Establece el apodo en el estado
+          setNickname(userDoc.data().nickname);
         }
         setUser(currentUser);
       } else {
         setUser(null);
-        setNickname(''); // Limpia el apodo si no hay usuario autenticado
+        setNickname('');
       }
       setLoading(false);
     });
@@ -58,9 +57,11 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+
   const signIn = async (email, password) => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      setUser(userCredential.user);
       setError(null);
     } catch (err) {
       console.error('Error al iniciar sesión:', err);
