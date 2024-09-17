@@ -1,14 +1,14 @@
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { ProductsContext } from '../context/ProductsContext';
 import { useTheme } from '@mui/material';
-import { Button, Box, Typography, Modal } from '@mui/material';
+import { Box, Typography, Modal } from '@mui/material';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
 import 'swiper/css/pagination';
 import { Pagination, EffectCoverflow } from 'swiper/modules';
+import BackspaceIcon from '@mui/icons-material/Backspace';
 import { NotFound } from '../components/NotFound';
 import '../components/carousel/style.css'
 
@@ -22,9 +22,9 @@ const style = {
   width: '80%',
   maxWidth: 600,
   bgcolor: 'background.paper',
-  border: '2px solid #000',
+  borderRadius: '2px',
   boxShadow: 24,
-  p: 4,
+  p: 2,
 };
 
 
@@ -42,6 +42,8 @@ export const Fav = ({ open, onClose }) => {
     return <div>No se encuentran productos</div>;
   }
 
+  const likedProducts = products.filter(product => product.like === true);
+
   const handleCardClick = (productId) => {
     onClose();
     navigate(`/productdetails/${productId}`);
@@ -57,6 +59,9 @@ export const Fav = ({ open, onClose }) => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <BackspaceIcon sx={{ mb: 2, cursor: 'pointer' }} onClick={onClose} />
+          </Box>
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
             Productos favoritos:
           </Typography>
@@ -76,8 +81,8 @@ export const Fav = ({ open, onClose }) => {
             modules={[EffectCoverflow, Pagination]}
             className="mySwiper"
           >
-            {products.length > 0 ? (
-              products.map(product => (
+            {likedProducts.length > 0 ? (
+              likedProducts.map(product => (
                 <SwiperSlide key={product.id} onClick={() => handleCardClick(product.id)}  >
                   <img src={product.image} alt={product.name} style={{ marginBottom: '10px', maxWidth: '200px' }} />
                 </SwiperSlide>
@@ -86,11 +91,6 @@ export const Fav = ({ open, onClose }) => {
               <NotFound />
             )}
           </Swiper>
-          <Link to="/gridcards" style={{ textDecoration: 'none' }}>
-            <Button variant="contained" sx={{ backgroundColor: theme.palette.primary.main, color: theme.palette.text.primary, my: 3, width: '100%' }}>
-              Ingresar
-            </Button>
-          </Link>
         </Box>
       </Modal>
     </div>

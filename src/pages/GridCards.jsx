@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { ProductsContext } from '../context/ProductsContext';
 import { Cover } from '../components/Cover';
 import { NotFound } from '../components/NotFound';
@@ -10,15 +10,16 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { ButtonBase, Box } from '@mui/material';
+import Checkbox from '@mui/material/Checkbox';
+import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
+import Favorite from '@mui/icons-material/Favorite';
 
 export const GridCards = () => {
   const { products, error } = useContext(ProductsContext);
   const [catFilter, setCatFilter] = useState("");
-  const [brandFilter, setBrandFilter] = useState("");
 
   if (error) return <NotFound />;
 
-  // Filter products by 'cat'
   const catFiltered = products.filter((product) =>
     catFilter === "" || product.cat === catFilter
   );
@@ -39,6 +40,12 @@ export const GridCards = () => {
                     image={product.image}
                     alt={product.name}
                   />
+                  <Checkbox
+                    icon={<FavoriteBorder />}
+                    checkedIcon={<Favorite />}
+                    checked={product.like}
+                    disabled
+                    sx={{ color: 'background.default', '&.Mui-checked': { color: '#32234e' } }} />
                   <CardContent>
                     <Box display="flex" justifyContent="space-between" alignItems="center">
                       <Typography gutterBottom variant="h5" component="div">
@@ -63,6 +70,4 @@ export const GridCards = () => {
     </>
   );
 }
-
-
 
