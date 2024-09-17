@@ -7,6 +7,7 @@ import Modal from '@mui/material/Modal';
 import { styled, alpha } from '@mui/material/styles';
 import { InputBase } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import BackspaceIcon from '@mui/icons-material/Backspace';
 import debounce from 'lodash/debounce';
 
 const style = {
@@ -14,11 +15,11 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: '90%',
+  width: '80%',
   bgcolor: 'background.paper',
-  border: '2px solid #000',
+  borderRadius: '2px',
   boxShadow: 24,
-  p: 4,
+  p: 2,
 };
 
 const Search = styled('div')(({ theme }) => ({
@@ -87,6 +88,9 @@ export const SearchModal = () => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <BackspaceIcon sx={{ mb: 2, cursor: 'pointer' }} onClick={handleClose} />
+          </Box>
           <Search>
             <SearchIconWrapper>
               <SearchIcon />
@@ -97,6 +101,7 @@ export const SearchModal = () => {
               onChange={handleSearchChange}
             />
           </Search>
+
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
             Productos sugeridos:
           </Typography>

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { ProductsContext } from '../context/ProductsContext';
 import { CartContext } from '../context/CartContext';
@@ -10,10 +10,21 @@ import Favorite from '@mui/icons-material/Favorite';
 
 export const ProductDetails = () => {
   const { id } = useParams();
-  const { products } = useContext(ProductsContext);
-  const { addProduct } = useContext(CartContext); // Accedes al método para agregar productos
+  const { products, toggleLike } = useContext(ProductsContext);
+  const { addProduct } = useContext(CartContext);
+  const [product, setProduct] = useState(null);
 
-  const product = products.find((p) => p.id === id);
+  useEffect(() => {
+    const foundProduct = products.find((p) => p.id === id);
+    setProduct(foundProduct);
+  }, [id, products]);
+
+  const handleLikeChange = () => {
+    if (product) {
+      toggleLike(id, product.like);
+    }
+  };
+
   if (!product) {
     return <div>Producto no encontrado</div>;
   }
@@ -21,7 +32,7 @@ export const ProductDetails = () => {
   return (
     <Box display="flex" justifyContent="center" py={5} sx={{ backgroundColor: "background.default" }}>
       <Card sx={{ width: 320 }}>
-        <CardContent >
+        <CardContent>
           <Box
             sx={{
               position: 'relative',
@@ -43,12 +54,17 @@ export const ProductDetails = () => {
               }}
             />
           </Box>
-          <Checkbox icon={<FavoriteBorder />} checkedIcon={<Favorite />} />
+          <Checkbox
+            icon={<FavoriteBorder />}
+            checkedIcon={<Favorite />}
+            checked={product.like}
+            onChange={handleLikeChange}
+          />
           <Typography variant="h5">{product.name}</Typography>
           <Typography variant="body2">{product.description}</Typography>
           <Typography variant="h6">${product.price}</Typography>
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Button variant="contained" sx={{ fontSize: '12px' }} component={Link} to={`/gridcards`} >
+            <Button variant="contained" sx={{ fontSize: '12px' }} component={Link} to={`/gridcards`}>
               Volver
             </Button>
             <Button variant="contained" sx={{ fontSize: '12px' }} onClick={() => addProduct(product)}>
