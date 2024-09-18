@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
+import { CartContext } from '../context/CartContext';
 import { GoToLogin } from './GoToLogin';
 import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
@@ -9,8 +10,11 @@ import ListItem from '@mui/material/ListItem';
 import Typography from '@mui/material/Typography';
 import { Button } from '@mui/material';
 
+
+
 export const CartDrawer = ({ open, onClose }) => {
   const { user, nickname } = useContext(AuthContext);
+  const { cart } = useContext(CartContext);
   const navigate = useNavigate();
 
   const handleConfirmBuy = () => {
@@ -27,27 +31,36 @@ export const CartDrawer = ({ open, onClose }) => {
       onClick={onClose}
       onKeyDown={onClose}
     >
+
+
       <List>
-        <ListItem disablePadding>
-          <Box display="flex" alignItems="center" mb={2} sx={{ border: "2px solid black" }}>
-            <img
-              src=""
-              alt=""
-              style={{ width: '50px', marginRight: '10px' }}
-            />
-            <Box>
-              <Typography variant="body1">Nombre</Typography>
-              <Typography variant="body2">Precio x cantidad</Typography>
-            </Box>
-          </Box>
-        </ListItem>
+        {cart.length > 0 ? (
+          cart.map((product) => (
+            <ListItem key={product.id} disablePadding>
+              <Box display="flex" alignItems="center" mb={2} sx={{ border: "2px solid black" }}>
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  style={{ width: '50px', marginRight: '10px' }}
+                />
+                <Box>
+                  <Typography variant="body1">{product.name}</Typography>
+                  <Typography variant="body2"> {product.price} x {product.quantity} = {product.price * product.quantity}</Typography>
+                </Box>
+              </Box>
+            </ListItem>
+          ))
+        ) : (
+          <Typography variant="body1" textAlign="center">
+            No tienes productos en el carrito.
+          </Typography>
+        )}
       </List>
     </Box>
   );
 
   return (
     <>
-
       <SwipeableDrawer
         anchor="right"
         open={open}
@@ -62,10 +75,22 @@ export const CartDrawer = ({ open, onClose }) => {
               Hola {nickname}!
             </Typography>
             {list()}
-            <Button variant='contained' onClick={handleConfirmBuy} sx={{ width: "80%", m: "auto" }}>Confirmar compra</Button>
+            {cart.length > 0 && (
+              <Button variant='contained' onClick={handleConfirmBuy} sx={{ width: "80%", m: "auto" }}>Confirmar compra</Button>
+            )}
           </>
         )}
+
       </SwipeableDrawer>
     </>
   );
-}; 
+};
+
+
+
+
+
+
+
+
+

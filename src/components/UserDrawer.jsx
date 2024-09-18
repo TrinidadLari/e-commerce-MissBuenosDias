@@ -54,9 +54,11 @@ export const UserDrawer = ({ open, onClose, onCartOpen }) => {
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
-          <ListItemButton>
-            <ListItemText primary="Historial" />
-          </ListItemButton>
+          <Link to="/history" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <ListItemButton>
+              <ListItemText primary="Historial" />
+            </ListItemButton>
+          </Link>
         </ListItem>
       </List>
       <Divider />
