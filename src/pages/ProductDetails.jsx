@@ -3,16 +3,19 @@ import { useParams } from 'react-router-dom';
 import { ProductsContext } from '../context/ProductsContext';
 import { CartContext } from '../context/CartContext';
 import { Link } from 'react-router-dom';
-import { Button, Card, CardContent, Typography, Box } from '@mui/material';
+import { Button, Card, CardContent, Typography, Box, Popover } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
 import Favorite from '@mui/icons-material/Favorite';
+import { CartDrawer } from '../components/CartDrawer';
 
 export const ProductDetails = () => {
   const { id } = useParams();
   const { products, toggleLike } = useContext(ProductsContext);
-  const { addProduct } = useContext(CartContext);
+  const { cart, addToCart } = useContext(CartContext);
   const [product, setProduct] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
     const foundProduct = products.find((p) => p.id === id);
@@ -24,6 +27,24 @@ export const ProductDetails = () => {
       toggleLike(id, product.like);
     }
   };
+
+  const handleAddToCart = (event) => {
+    const isProductInCart = cart.find(item => item.id === product.id);
+
+    if (isProductInCart) {
+      setAnchorEl(event.currentTarget);
+    } else {
+      addToCart(product, 1);
+      setDrawerOpen(true);
+    }
+  };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
+
+  const openPopover = Boolean(anchorEl);
+  const popoverId = openPopover ? 'simple-popover' : undefined;
 
   if (!product) {
     return <div>Producto no encontrado</div>;
@@ -67,12 +88,25 @@ export const ProductDetails = () => {
             <Button variant="contained" sx={{ fontSize: '12px' }} component={Link} to={`/gridcards`}>
               Volver
             </Button>
-            <Button variant="contained" sx={{ fontSize: '12px' }} onClick={() => addProduct(product)}>
+            <Button variant="contained" sx={{ fontSize: '12px' }} onClick={handleAddToCart}>
               Agregar al carrito
             </Button>
+            <Popover
+              id={popoverId}
+              open={openPopover}
+              anchorEl={anchorEl}
+              onClose={handlePopoverClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'center',
+              }}
+            >
+              <Typography sx={{ p: 2 }}>Este artículo ya está en el carrito</Typography>
+            </Popover>
           </Box>
         </CardContent>
       </Card>
+      <CartDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
     </Box>
   );
 };

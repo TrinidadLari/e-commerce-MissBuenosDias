@@ -22,6 +22,34 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+  // Agregar producto al carrito o actualizar la cantidad
+  const addToCart = (product, quantity) => {
+    setCart((prevCart) => {
+      const existingProduct = prevCart.find(item => item.id === product.id);
+      let updatedCart;
+
+      if (existingProduct) {
+        updatedCart = prevCart.map(item =>
+          item.id === product.id ? { ...item, quantity: item.quantity + quantity } : item
+        );
+      } else {
+        updatedCart = [...prevCart, { ...product, quantity }];
+      }
+
+      saveCartToFirestore(updatedCart);
+      return updatedCart;
+    });
+  };
+
+  // Remover un producto del carrito
+  const removeFromCart = (productId) => {
+    setCart((prevCart) => {
+      const updatedCart = prevCart.filter(item => item.id !== productId);
+      saveCartToFirestore(updatedCart);
+      return updatedCart;
+    });
+  };
+
 
   useEffect(() => {
     if (!user) return;
@@ -43,7 +71,7 @@ export const CartProvider = ({ children }) => {
   }, [user]);
 
   return (
-    <CartContext.Provider value={{ cart }}>
+    <CartContext.Provider value={{ cart, addToCart, removeFromCart }}>
       {children}
     </CartContext.Provider>
   );

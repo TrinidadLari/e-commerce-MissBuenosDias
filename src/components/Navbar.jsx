@@ -4,7 +4,6 @@ import { SearchModal } from './SearchModal';
 import { ThemeToggleBtn } from './ThemeToggleBtn';
 import { CartDrawer } from './CartDrawer';
 import { UserDrawer } from './UserDrawer';
-import { Fav } from './Fav';
 import Box from '@mui/material/Box';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
