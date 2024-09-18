@@ -20,16 +20,14 @@ export const Footer = () => {
           backgroundColor: theme.palette.background.paper,
           padding: '16px',
           color: theme.palette.text.primary,
+          boxShadow: '0 -2px 8px rgba(255, 255, 255, 0.3)',
         }}
       >
         <Box sx={{ display: 'flex', justifyContent: 'center', gap: 6, my: 4 }}>
-          <Button variant="contained" sx={{ fontSize: '12px' }} component={Link} to={`/`}>
+          <Button variant="contained" sx={{ fontSize: '12px', width: '200px' }} component={Link} to={`/`}>
             Inicio
           </Button>
-          <Button variant="contained" sx={{ fontSize: '12px' }} component={Link} to={`/register`} >
-            Registrarse
-          </Button>
-          <Button variant="contained" sx={{ fontSize: '12px' }} component={Link} to={`/gridcards`}>
+          <Button variant="contained" sx={{ fontSize: '12px', width: '200px' }} component={Link} to={`/gridcards`}>
             Galería
           </Button>
         </Box>

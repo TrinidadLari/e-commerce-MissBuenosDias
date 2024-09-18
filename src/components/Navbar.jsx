@@ -25,6 +25,12 @@ export const Navbar = ({ mode, setMode }) => {
     setUserDrawerOpen(!userDrawerOpen);
   };
 
+  const handleCartOpen = () => {
+    setUserDrawerOpen(false);
+    setCartDrawerOpen(true);
+  };
+
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -60,7 +66,8 @@ export const Navbar = ({ mode, setMode }) => {
         </Toolbar>
       </AppBar>
       <CartDrawer open={cartDrawerOpen} onClose={handleCartDrawerToggle} />
-      <UserDrawer open={userDrawerOpen} onClose={handleUserDrawerToggle} />
+      <UserDrawer open={userDrawerOpen} onClose={handleUserDrawerToggle} onCartOpen={handleCartOpen} />
+
     </Box>
   );
 }

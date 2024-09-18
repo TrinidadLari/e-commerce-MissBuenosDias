@@ -1,19 +1,51 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { ProductsContext } from '../context/ProductsContext';
 import { CartContext } from '../context/CartContext';
 import { Link } from 'react-router-dom';
-import { Button, Card, CardContent, Typography, Box } from '@mui/material';
+import { Button, Card, CardContent, Typography, Box, Popover } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
 import Favorite from '@mui/icons-material/Favorite';
+import { CartDrawer } from '../components/CartDrawer';
 
 export const ProductDetails = () => {
   const { id } = useParams();
-  const { products } = useContext(ProductsContext);
-  const { addProduct } = useContext(CartContext); // Accedes al método para agregar productos
+  const { products, toggleLike } = useContext(ProductsContext);
+  const { cart, addToCart } = useContext(CartContext);
+  const [product, setProduct] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const product = products.find((p) => p.id === id);
+  useEffect(() => {
+    const foundProduct = products.find((p) => p.id === id);
+    setProduct(foundProduct);
+  }, [id, products]);
+
+  const handleLikeChange = () => {
+    if (product) {
+      toggleLike(id, product.like);
+    }
+  };
+
+  const handleAddToCart = (event) => {
+    const isProductInCart = cart.find(item => item.id === product.id);
+
+    if (isProductInCart) {
+      setAnchorEl(event.currentTarget);
+    } else {
+      addToCart(product, 1);
+      setDrawerOpen(true);
+    }
+  };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
+
+  const openPopover = Boolean(anchorEl);
+  const popoverId = openPopover ? 'simple-popover' : undefined;
+
   if (!product) {
     return <div>Producto no encontrado</div>;
   }
@@ -21,7 +53,7 @@ export const ProductDetails = () => {
   return (
     <Box display="flex" justifyContent="center" py={5} sx={{ backgroundColor: "background.default" }}>
       <Card sx={{ width: 320 }}>
-        <CardContent >
+        <CardContent>
           <Box
             sx={{
               position: 'relative',
@@ -43,20 +75,38 @@ export const ProductDetails = () => {
               }}
             />
           </Box>
-          <Checkbox icon={<FavoriteBorder />} checkedIcon={<Favorite />} />
+          <Checkbox
+            icon={<FavoriteBorder />}
+            checkedIcon={<Favorite />}
+            checked={product.like}
+            onChange={handleLikeChange}
+          />
           <Typography variant="h5">{product.name}</Typography>
           <Typography variant="body2">{product.description}</Typography>
           <Typography variant="h6">${product.price}</Typography>
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Button variant="contained" sx={{ fontSize: '12px' }} component={Link} to={`/gridcards`} >
+            <Button variant="contained" sx={{ fontSize: '12px' }} component={Link} to={`/gridcards`}>
               Volver
             </Button>
-            <Button variant="contained" sx={{ fontSize: '12px' }} onClick={() => addProduct(product)}>
+            <Button variant="contained" sx={{ fontSize: '12px' }} onClick={handleAddToCart}>
               Agregar al carrito
             </Button>
+            <Popover
+              id={popoverId}
+              open={openPopover}
+              anchorEl={anchorEl}
+              onClose={handlePopoverClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'center',
+              }}
+            >
+              <Typography sx={{ p: 2 }}>Este artículo ya está en el carrito</Typography>
+            </Popover>
           </Box>
         </CardContent>
       </Card>
+      <CartDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
     </Box>
   );
 };
