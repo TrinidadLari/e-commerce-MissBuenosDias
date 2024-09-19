@@ -10,12 +10,14 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Typography from '@mui/material/Typography';
 import { Button } from '@mui/material';
+import BackspaceIcon from '@mui/icons-material/Backspace';
+import ClearIcon from '@mui/icons-material/Clear';
 
 
 
 export const CartDrawer = ({ open, onClose }) => {
   const { user, nickname } = useContext(AuthContext);
-  const { cart, addToCart } = useContext(CartContext);
+  const { cart, addToCart, removeFromCart, removeAllFromCart } = useContext(CartContext);
   const navigate = useNavigate();
 
   const handleConfirmBuy = () => {
@@ -29,13 +31,15 @@ export const CartDrawer = ({ open, onClose }) => {
     }
   };
 
+  const handleClearCart = () => {
+    removeAllFromCart();
+  };
+
 
   const list = () => (
     <Box display="flex"
       justifyContent="center"
       role="presentation"
-      onClick={onClose}
-      onKeyDown={onClose}
     >
 
 
@@ -44,6 +48,9 @@ export const CartDrawer = ({ open, onClose }) => {
           cart.map((product) => (
             <ListItem key={product.id} disablePadding>
               <Box display="flex" alignItems="center" m={1} sx={{ boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)", borderRadius: "2px", }}>
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <ClearIcon sx={{ m: 2, cursor: 'pointer' }} onClick={() => removeFromCart(product.id)} />
+                </Box>
                 <img
                   src={product.image}
                   alt={product.name}
@@ -76,30 +83,32 @@ export const CartDrawer = ({ open, onClose }) => {
         onClose={onClose}
         onOpen={() => { }}
       >
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <BackspaceIcon sx={{ m: 2, cursor: 'pointer' }} onClick={onClose} />
+        </Box>
         {!user ? (
           <GoToLogin />
         ) : (
-          <>
-            <Typography textAlign="center" my="12px">
-              Hola {nickname}!
-            </Typography>
-            {list()}
+          <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+            <Box>
+              <Typography textAlign="center" my="12px">
+                Hola {nickname}!
+              </Typography>
+              {list()}
+            </Box>
             {cart.length > 0 && (
-              <Button variant='contained' onClick={handleConfirmBuy} sx={{ width: "80%", m: "auto" }}>Confirmar compra</Button>
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 2 }}>
+                <Button variant='contained' onClick={handleConfirmBuy} sx={{ width: "80%" }}>
+                  Confirmar compra
+                </Button>
+                <Button variant='contained' onClick={handleClearCart} sx={{ width: "80%", mt: 1 }}>
+                  Vaciar carrito
+                </Button>
+              </Box>
             )}
-          </>
+          </Box>
         )}
-
       </SwipeableDrawer>
     </>
   );
-};
-
-
-
-
-
-
-
-
-
+}
