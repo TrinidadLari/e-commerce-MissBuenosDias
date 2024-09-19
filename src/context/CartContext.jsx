@@ -52,6 +52,11 @@ export const CartProvider = ({ children }) => {
     });
   };
 
+  const removeAllFromCart = () => {
+    setCart([]);
+    saveCartToFirestore([]);
+  };
+
 
   const handleConfirmBuy = async () => {
     try {
@@ -83,7 +88,7 @@ export const CartProvider = ({ children }) => {
   };
 
   const prepareWhatsAppMessage = () => {
-    let message = `Hola mi nombre es ${nickname}\nTe encargo:\n`;
+    let message = `Hola mi soy ${nickname}\nTe encargo:\n`;
 
     cart.forEach(product => {
       const subtotal = product.price * product.quantity;
@@ -117,7 +122,7 @@ export const CartProvider = ({ children }) => {
   }, [user]);
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, handleConfirmBuy }}>
+    <CartContext.Provider value={{ cart, addToCart, removeFromCart, handleConfirmBuy, removeAllFromCart }}>
       {children}
     </CartContext.Provider>
   );

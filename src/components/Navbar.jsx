@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import { CartContext } from '../context/CartContext';
 import { SearchModal } from './SearchModal';
 import { ThemeToggleBtn } from './ThemeToggleBtn';
 import { CartDrawer } from './CartDrawer';
@@ -14,6 +15,7 @@ import { Search as SearchIcon, AccountCircle, ShoppingCart as ShoppingCartIcon }
 
 
 export const Navbar = ({ mode, setMode }) => {
+  const { cart } = useContext(CartContext);
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
   const [userDrawerOpen, setUserDrawerOpen] = useState(false);
 
@@ -30,6 +32,7 @@ export const Navbar = ({ mode, setMode }) => {
     setCartDrawerOpen(true);
   };
 
+  const totalCartItems = cart.reduce((total, product) => total + product.quantity, 0);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -49,7 +52,7 @@ export const Navbar = ({ mode, setMode }) => {
               color="inherit"
               onClick={handleCartDrawerToggle}
             >
-              <Badge badgeContent={17} color="error">
+              <Badge badgeContent={totalCartItems} color="error">
                 <ShoppingCartIcon />
               </Badge>
             </IconButton>
