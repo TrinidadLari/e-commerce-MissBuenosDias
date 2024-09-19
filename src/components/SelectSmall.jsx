@@ -21,7 +21,6 @@ export const SelectSmall = ({ value, onFilterChange }) => {
         sx={{
           backgroundColor: theme.palette.primary.main,
           color: theme.palette.text.primary,
-
         }}
       >
         <MenuItem value="">

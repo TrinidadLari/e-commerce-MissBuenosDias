@@ -49,14 +49,14 @@ export const GridCards = () => {
                   <CardContent>
                     <Box display="flex" justifyContent="space-between" alignItems="center">
                       <Typography gutterBottom variant="h5" component="div">
-                        {product.name}
+                        {product.name} 💠
                       </Typography>
                       <Typography gutterBottom variant="h5" component="div">
                         ${product.price}
                       </Typography>
                     </Box>
                     <Typography variant="body2" color="text.secondary">
-                      {product.description}
+                      {product.stock} Disponibles
                     </Typography>
                   </CardContent>
                 </Card>

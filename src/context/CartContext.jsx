@@ -1,13 +1,14 @@
 import { createContext, useState, useEffect, useContext } from 'react';
+
 import { AuthContext } from './AuthContext';
-import { doc, setDoc, onSnapshot } from 'firebase/firestore';
+import { doc, setDoc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
-  const { user } = useContext(AuthContext);
+  const { user, nickname } = useContext(AuthContext);
 
 
   const saveCartToFirestore = async (newCart) => {
@@ -36,18 +37,63 @@ export const CartProvider = ({ children }) => {
         updatedCart = [...prevCart, { ...product, quantity }];
       }
 
+      console.log('Carrito actualizado:', updatedCart);
       saveCartToFirestore(updatedCart);
       return updatedCart;
     });
   };
 
-  // Remover un producto del carrito
+  // eliminar un producto del carrito
   const removeFromCart = (productId) => {
     setCart((prevCart) => {
       const updatedCart = prevCart.filter(item => item.id !== productId);
       saveCartToFirestore(updatedCart);
       return updatedCart;
     });
+  };
+
+
+  const handleConfirmBuy = async () => {
+    try {
+      for (const product of cart) {
+        const productRef = doc(db, 'products', product.id);
+        await updateDoc(productRef, {
+          stock: product.stock - product.quantity
+        });
+      }
+      console.log("Compra confirmada y stock actualizado");
+
+
+      const message = prepareWhatsAppMessage();
+
+
+      if (user) {
+        await setDoc(doc(db, 'carts', user.uid), { cart: [] });
+      }
+      setCart([]);
+
+
+      window.open(`https://wa.me/+5493464443683?text=${encodeURIComponent(message)}`, '_blank');
+
+
+
+    } catch (err) {
+      console.error("Error actualizando el stock:", err);
+    }
+  };
+
+  const prepareWhatsAppMessage = () => {
+    let message = `Hola mi nombre es ${nickname}\nTe encargo:\n`;
+
+    cart.forEach(product => {
+      const subtotal = product.price * product.quantity;
+      message += `${product.quantity}x ${product.name} - Subtotal: $${subtotal.toFixed(2)}\n`;
+    });
+
+    const total = cart.reduce((acc, product) => acc + product.price * product.quantity, 0);
+    message += `\nTotal de la compra: $${total.toFixed(2)}\n\nAcordemos forma de pago y envío.`;
+
+    return message;
   };
 
 
@@ -71,7 +117,7 @@ export const CartProvider = ({ children }) => {
   }, [user]);
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart }}>
+    <CartContext.Provider value={{ cart, addToCart, removeFromCart, handleConfirmBuy }}>
       {children}
     </CartContext.Provider>
   );
