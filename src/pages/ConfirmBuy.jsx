@@ -9,7 +9,7 @@ export const ConfirmBuy = () => {
 
   const handleConfirm = async () => {
     await handleConfirmBuy();
-    // Aquí puedes navegar a la página de confirmación o mostrar un mensaje de éxito
+
     console.log("Compra confirmada");
   };
 
