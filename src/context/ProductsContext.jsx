@@ -41,10 +41,26 @@ export const ProductsProvider = ({ children }) => {
       console.error("Error al actualizar el estado de like:", err);
     }
   };
+  const toggleLike = async (productId, currentLikeStatus) => {
+    try {
+      const newLikeStatus = !currentLikeStatus;
+      const productRef = doc(db, 'products', productId);
+      await updateDoc(productRef, { like: newLikeStatus });
+
+      setProducts((prevProducts) =>
+        prevProducts.map((product) =>
+          product.id === productId ? { ...product, like: newLikeStatus } : product
+        )
+      );
+    } catch (err) {
+      console.error("Error al actualizar el estado de like:", err);
+    }
+  };
 
   return (
     <ProductsContext.Provider value={{ products, error, toggleLike }}>
-      {children}
-    </ProductsContext.Provider>
-  );
+      <ProductsContext.Provider value={{ products, error, toggleLike }}>
+        {children}
+      </ProductsContext.Provider>
+      );
 };
