@@ -83,6 +83,7 @@ export const ProductDetails = () => {
           />
           <Typography variant="h5">{product.name}</Typography>
           <Typography variant="body2">{product.description}</Typography>
+          <Typography variant="body3">{product.stock} Disponibles</Typography>
           <Typography variant="h6">${product.price}</Typography>
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Button variant="contained" sx={{ fontSize: '12px' }} component={Link} to={`/gridcards`}>
