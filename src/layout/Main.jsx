@@ -6,6 +6,7 @@ import { Register } from '../pages/Register.jsx';
 import { Profile } from '../pages/Profile.jsx';
 import { History } from '../pages/History.jsx';
 import { ConfirmBuy } from '../pages/ConfirmBuy.jsx';
+import { NotFound } from '../components/NotFound.jsx';
 
 
 export const Main = () => {
@@ -18,6 +19,7 @@ export const Main = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/history" element={<History />} />
         <Route path="/confirmbuy" element={<ConfirmBuy />} />
+        <Route path="/*" element={<NotFound />} />
       </Routes>
     </>
   )

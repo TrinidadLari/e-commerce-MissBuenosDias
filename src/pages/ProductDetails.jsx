@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { ProductsContext } from '../context/ProductsContext';
+import { AuthContext } from '../context/AuthContext';
 import { CartContext } from '../context/CartContext';
 import { Link } from 'react-router-dom';
 import { Button, Card, CardContent, Typography, Box, Popover } from '@mui/material';
@@ -11,7 +12,9 @@ import { CartDrawer } from '../components/CartDrawer';
 
 export const ProductDetails = () => {
   const { id } = useParams();
-  const { products, toggleLike } = useContext(ProductsContext);
+  const { products } = useContext(ProductsContext);
+  const { likes, toggleLike } = useContext(AuthContext);
+  const [isLiked, setIsLiked] = useState(false);
   const { cart, addToCart } = useContext(CartContext);
   const [product, setProduct] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -20,11 +23,18 @@ export const ProductDetails = () => {
   useEffect(() => {
     const foundProduct = products.find((p) => p.id === id);
     setProduct(foundProduct);
-  }, [id, products]);
+
+    if (foundProduct && likes) {
+      const likedStatus = likes[foundProduct.id] || false;
+      setIsLiked(likedStatus);
+    }
+  }, [id, products, likes]);
 
   const handleLikeChange = () => {
     if (product) {
-      toggleLike(id, product.like);
+      console.log("Before toggle: isLiked:", isLiked);
+      toggleLike(product.id, isLiked);
+      setIsLiked((prev) => !prev);
     }
   };
 
@@ -58,7 +68,7 @@ export const ProductDetails = () => {
             sx={{
               position: 'relative',
               width: '100%',
-              paddingTop: '56.25%',
+              paddingTop: '100%',
               overflow: 'hidden',
             }}
           >
@@ -78,7 +88,7 @@ export const ProductDetails = () => {
           <Checkbox
             icon={<FavoriteBorder />}
             checkedIcon={<Favorite />}
-            checked={product.like}
+            checked={isLiked}
             onChange={handleLikeChange}
           />
           <Typography variant="h5">{product.name}</Typography>
@@ -111,5 +121,3 @@ export const ProductDetails = () => {
     </Box>
   );
 };
-
-export default ProductDetails;

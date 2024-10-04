@@ -1,4 +1,4 @@
-import { collection, getDocs, doc, updateDoc, onSnapshot } from 'firebase/firestore';
+import { collection, getDocs, onSnapshot } from 'firebase/firestore';
 import { useEffect, useState, createContext } from 'react';
 import { db } from '../../firebase';
 
@@ -41,24 +41,8 @@ export const ProductsProvider = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
-  const toggleLike = async (productId, currentLikeStatus) => {
-    try {
-      const newLikeStatus = !currentLikeStatus;
-      const productRef = doc(db, 'products', productId);
-      await updateDoc(productRef, { like: newLikeStatus });
-
-      setProducts((prevProducts) =>
-        prevProducts.map((product) =>
-          product.id === productId ? { ...product, like: newLikeStatus } : product
-        )
-      );
-    } catch (err) {
-      console.error("Error al actualizar el estado de like:", err);
-    }
-  };
-
   return (
-    <ProductsContext.Provider value={{ products, error, toggleLike }}>
+    <ProductsContext.Provider value={{ products, error }}>
       {children}
     </ProductsContext.Provider>
   );

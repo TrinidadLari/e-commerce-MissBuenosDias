@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 import { ProductsContext } from '../context/ProductsContext';
 import { useTheme } from '@mui/material';
 import { Box, Typography, Modal } from '@mui/material';
@@ -31,6 +32,7 @@ const style = {
 export const Fav = ({ open, onClose }) => {
   const theme = useTheme();
   const { products, error } = useContext(ProductsContext);
+  const { likes } = useContext(AuthContext);
   const navigate = useNavigate();
 
   if (error) {
@@ -42,7 +44,7 @@ export const Fav = ({ open, onClose }) => {
     return <div>No se encuentran productos</div>;
   }
 
-  const likedProducts = products.filter(product => product.like === true);
+  const likedProducts = products.filter(product => likes[product.id]);
 
   const handleCardClick = (productId) => {
     onClose();
