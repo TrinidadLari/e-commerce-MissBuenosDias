@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { ProductsContext } from '../context/ProductsContext';
+import { AuthContext } from '../context/AuthContext';
 import { Cover } from '../components/Cover';
 import { NotFound } from '../components/NotFound';
 import { FiltersSelect } from '../components/FiltersSelect';
@@ -16,6 +17,7 @@ import Favorite from '@mui/icons-material/Favorite';
 
 export const GridCards = () => {
   const { products, error } = useContext(ProductsContext);
+  const { likes } = useContext(AuthContext);
   const [catFilter, setCatFilter] = useState("");
 
   if (error) return <NotFound />;
@@ -43,9 +45,10 @@ export const GridCards = () => {
                   <Checkbox
                     icon={<FavoriteBorder />}
                     checkedIcon={<Favorite />}
-                    checked={product.like}
+                    checked={likes && likes[product.id] ? likes[product.id] : false}
                     disabled
-                    sx={{ color: 'background.default', '&.Mui-checked': { color: '#32234e' } }} />
+                    sx={{ color: 'background.default', '&.Mui-checked': { color: '#32234e' } }}
+                  />
                   <CardContent>
                     <Box display="flex" justifyContent="space-between" alignItems="center">
                       <Typography gutterBottom variant="h5" component="div">
@@ -70,4 +73,3 @@ export const GridCards = () => {
     </>
   );
 }
-

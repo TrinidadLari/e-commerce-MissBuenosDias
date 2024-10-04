@@ -15,7 +15,6 @@ export const CartProvider = ({ children }) => {
       const cartRef = doc(db, 'carts', user.uid);
       try {
         await setDoc(cartRef, { cart: newCart });
-        console.log('Carrito guardado en Firebase:', newCart);
       } catch (err) {
         console.error('Error actualizando el carrito en Firebase:', err);
       }
@@ -35,7 +34,6 @@ export const CartProvider = ({ children }) => {
         updatedCart = [...prevCart, { ...product, quantity }];
       }
 
-      console.log('Carrito actualizado:', updatedCart);
       saveCartToFirestore(updatedCart);
       return updatedCart;
     });
@@ -56,11 +54,9 @@ export const CartProvider = ({ children }) => {
 
   const handleConfirmBuy = async () => {
     try {
-      console.log("Iniciando la confirmación de compra");
 
       const buyDetails = [];
 
-      // Actualizar stock de productos
       for (const product of cart) {
         const productRef = doc(db, 'products', product.id);
         await updateDoc(productRef, {
@@ -71,21 +67,16 @@ export const CartProvider = ({ children }) => {
           name: product.name,
           quantity: product.quantity,
           price: product.price,
+          image: product.image,
         });
       }
 
-      console.log("Stock actualizado. Detalles de la compra:", buyDetails);
-
-      // Verificar si el usuario está logueado
       if (user) {
         const historyRef = doc(db, 'buyHistory', user.uid);
 
-        // Cambiar get() por getDoc()
         const historySnap = await getDoc(historyRef);
 
-        // Verificar si el documento existe
         if (historySnap.exists()) {
-          // Si el documento existe, usar updateDoc
           await updateDoc(historyRef, {
             buys: arrayUnion({
               date: new Date().toISOString(),
@@ -94,7 +85,6 @@ export const CartProvider = ({ children }) => {
             })
           });
         } else {
-          // Si el documento no existe, usar setDoc para crearlo
           await setDoc(historyRef, {
             buys: [{
               date: new Date().toISOString(),
@@ -105,19 +95,15 @@ export const CartProvider = ({ children }) => {
         }
       }
 
-      console.log("Historial de compra actualizado");
-
       const message = prepareWhatsAppMessage();
 
-      // Actualizar carrito del usuario
+
       if (user) {
         await setDoc(doc(db, 'carts', user.uid), { cart: [] });
       }
 
       setCart([]);
-      console.log("Carrito actualizado a vacío. Mensaje de WhatsApp preparado:", message);
 
-      // Abrir WhatsApp con el mensaje codificado
       window.open(`https://wa.me/+5493464443683?text=${encodeURIComponent(message)}`, '_blank');
 
     } catch (err) {
@@ -147,7 +133,6 @@ export const CartProvider = ({ children }) => {
       if (docSnap.exists()) {
         setBuys(docSnap.data().buys || []);
       } else {
-        console.log('No se encuentra historial de compra');
         setBuys([]);
       }
     });
@@ -163,9 +148,7 @@ export const CartProvider = ({ children }) => {
       if (docSnap.exists()) {
         const cartData = docSnap.data().cart;
         setCart(cartData);
-        console.log('Carrito cargado desde Firebase:', cartData);
       } else {
-        console.log('No se encontró el carrito, creando uno nuevo.');
         setCart([]);
         saveCartToFirestore([]);
       }
